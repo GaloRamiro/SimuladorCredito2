@@ -10,8 +10,6 @@ let creditoAprobado = false;
 
 //Para recuperar o mostrar información usar los métodos de la clase utilitarios, puede agregar métodos adicionales en utilitarios
 
-
-
 // Crear función ocultarSecciones()
 //No recibe parámetros
 //Debe quitar la clase activa a todas las secciones
@@ -27,4 +25,16 @@ function ocultarSecciones() {
 function mostrarSeccion(id) {
   ocultarSecciones(); // 1. ocultar todo
   document.getElementById(id).classList.add("activa"); // 2. mostrar una
+}
+
+function guardarTasa() {
+  let valorTasa = recuperarInt("tasaInteres");
+  if (isNaN(valorTasa)){
+    mostrarTexto("mensajeTasa", "Ingrese un número válido");
+  }else if (valorTasa >= 10 && valorTasa <= 20){
+      mostrarTexto("mensajeTasa", "Tasa configurada correctamente: " + valorTasa + "%");
+      tasaInteres = valorTasa;
+  }else{
+        mostrarTexto("mensajeTasa", "La tasa debe estar entre 10% y 20%");
+  }
 }
