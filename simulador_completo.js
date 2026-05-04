@@ -8,12 +8,6 @@ let montoCalculado = 0;
 let plazoCalculado = 0;
 let creditoAprobado = false;
 
-//Para recuperar o mostrar información usar los métodos de la clase utilitarios, puede agregar métodos adicionales en utilitarios
-
-// Crear función ocultarSecciones()
-//No recibe parámetros
-//Debe quitar la clase activa a todas las secciones
-
 function ocultarSecciones() {
   let secciones = document.querySelectorAll("section");
 
@@ -42,32 +36,13 @@ function guardarTasa() {
   }
 }
 
-function guardarCliente() {
-
-  let valorCedula = recuperaraTexto("txtCedula");
-  let valorNombre = recuperaraTexto("txtNombre");
-  let valorApellido = recuperaraTexto("txtApellido");
-  let valorIngreso = recuperarFloat("campoIngresos");
-  let valorEgresos = recuperarFloat("campoEgresos");
-
-  let nuevoCliente = {
-    cedula: valorCedula,
-    nombre: valorNombre,
-    apellido: valorApellido,
-    ingresos: valorIngreso,
-    egresos: valorEgresos
-  };
-
-  agregarCliente(nuevoCliente);
-}
-
 function agregarCliente(ingresoCliente) {
-  let resultado = buscarcliente(ingresoCliente.cedula);
+  let resultado = buscarCliente(ingresoCliente.cedula);
 
   if (resultado == null) {
     clientes.push(ingresoCliente);
     alert("Cliente agregado");
-    pintarClientes(); 
+    pintarClientes();
   } else {
     alert("YA EXISTE EL CLIENTE CON LA CÉDULA: " + ingresoCliente.cedula);
   }
@@ -88,8 +63,14 @@ function pintarClientes() {
     contenido += "<td>" + c.ingresos + "</td>";
     contenido += "<td>" + c.egresos + "</td>";
     contenido += "<td>";
-    contenido += "<button>Actualizar</button>";
-    contenido += "<button>Eliminar</button>";
+    contenido +=
+      "<button onclick=\"seleccionarCliente('" +
+      c.cedula +
+      "')\">Actualizar</button>";
+    contenido +=
+      "<button onclick=\"eliminarCliente('" +
+      c.cedula +
+      "')\">Eliminar</button>";
     contenido += "</td>";
     contenido += "</tr>";
   }
@@ -97,11 +78,81 @@ function pintarClientes() {
   cmpTabla.innerHTML = contenido;
 }
 
-function buscarcliente(cedula) {
+function buscarCliente(cedula) {
   for (let i = 0; i < clientes.length; i++) {
     if (clientes[i].cedula == cedula) {
       return clientes[i];
     }
   }
   return null;
+}
+
+function seleccionarCliente(cedula) {
+  let cliente = buscarCliente(cedula);
+
+  if (cliente != null) {
+    clienteSeleccionado = cliente;
+
+    mostrarTextoEnCaja("txtCedula", cliente.cedula);
+    mostrarTextoEnCaja("txtNombre", cliente.nombre);
+    mostrarTextoEnCaja("txtApellido", cliente.apellido);
+    mostrarTextoEnCaja("campoIngresos", cliente.ingresos);
+    mostrarTextoEnCaja("campoEgresos", cliente.egresos);
+  }
+}
+
+function limpiar() {
+  mostrarTextoEnCaja("txtCedula", "");
+  mostrarTextoEnCaja("txtNombre", "");
+  mostrarTextoEnCaja("txtApellido", "");
+  mostrarTextoEnCaja("campoIngresos", "");
+  mostrarTextoEnCaja("campoEgresos", "");
+
+  clienteSeleccionado = null;
+}
+
+function guardarCliente() {
+  let cedula = recuperaraTexto("txtCedula");
+  let nombre = recuperaraTexto("txtNombre");
+  let apellido = recuperaraTexto("txtApellido");
+  let ingresos = recuperarFloat("campoIngresos");
+  let egresos = recuperarFloat("campoEgresos");
+
+  let existente = buscarCliente(cedula);
+
+  if (existente == null) {
+    // CREAR
+    let nuevo = {
+      cedula: cedula,
+      nombre: nombre,
+      apellido: apellido,
+      ingresos: ingresos,
+      egresos: egresos,
+    };
+
+    clientes.push(nuevo);
+    alert("Cliente creado");
+  } else {
+    // ACTUALIZAR (NO cambiar cédula)
+    existente.nombre = nombre;
+    existente.apellido = apellido;
+    existente.ingresos = ingresos;
+    existente.egresos = egresos;
+
+    alert("Cliente actualizado");
+  }
+
+  pintarClientes();
+  limpiar();
+}
+
+function eliminarCliente(cedula) {
+  for (let i = 0; i < clientes.length; i++) {
+    if (clientes[i].cedula == cedula) {
+      clientes.splice(i, 1);
+      break;
+    }
+  }
+
+  pintarClientes();
 }
