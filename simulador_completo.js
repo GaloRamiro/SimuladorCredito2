@@ -126,4 +126,32 @@ function eliminarCliente(cedula) {
       break;
     }
   }
-  pintarClientes(); }
+  pintarClientes();
+}
+
+function buscarClienteCredito() {
+  let buscarCedula = recuperaraTexto("buscarCedulaCredito");
+  let existenteBuscado = buscarCliente(buscarCedula);
+  if (existenteBuscado!=null){
+clienteSeleccionado = existenteBuscado;
+   let contenido = `
+      <h3>Cliente encontrado</h3>
+      <p><strong>Cédula:</strong> ${existenteBuscado.cedula}</p>
+      <p><strong>Nombre:</strong> ${existenteBuscado.nombre}</p>
+      <p><strong>Apellido:</strong> ${existenteBuscado.apellido}</p>
+      <p><strong>Ingresos:</strong> $${existenteBuscado.ingreso}</p>
+      <p><strong>Egresos:</strong> $${existenteBuscado.egreso}</p>
+    `;
+
+    document.getElementById("datosClienteCredito").innerHTML = contenido;
+
+  } else {
+
+   
+    document.getElementById("datosClienteCredito").innerHTML =
+      "<p>Cliente no encontrado</p>";
+
+    clienteSeleccionado = null;
+  }
+}
+ 
