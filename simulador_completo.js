@@ -132,9 +132,9 @@ function eliminarCliente(cedula) {
 function buscarClienteCredito() {
   let buscarCedula = recuperaraTexto("buscarCedulaCredito");
   let existenteBuscado = buscarCliente(buscarCedula);
-  if (existenteBuscado!=null){
-clienteSeleccionado = existenteBuscado;
-   let contenido = `
+  if (existenteBuscado != null) {
+    clienteSeleccionado = existenteBuscado;
+    let contenido = `
       <h3>Cliente encontrado</h3>
       <p><strong>Cédula:</strong> ${existenteBuscado.cedula}</p>
       <p><strong>Nombre:</strong> ${existenteBuscado.nombre}</p>
@@ -144,14 +144,87 @@ clienteSeleccionado = existenteBuscado;
     `;
 
     document.getElementById("datosClienteCredito").innerHTML = contenido;
-
   } else {
-
-   
     document.getElementById("datosClienteCredito").innerHTML =
       "<p>Cliente no encontrado</p>";
 
     clienteSeleccionado = null;
   }
 }
- 
+
+function calcularCredito() {
+  // Verificar que exista cliente seleccionado
+  if (clienteSeleccionado == null) {
+    document.getElementById("resultadoCredito").innerHTML =
+      "<p>Debe buscar un cliente primero</p>";
+    return;
+  }
+
+  // Recuperar datos
+  let monto = recuperarFloat("montoCredito");
+  let plazo = recuperarInt("plazoCredito");
+
+  // Datos del cliente
+  let ingresos = clienteSeleccionado.ingreso;
+  let egresos = clienteSeleccionado.egreso;
+
+  // 1. Capacidad de pago
+  let disponible = calcularDisponible(ingresos, egresos);
+
+  let capacidadPago = calculaCapacidadPago(disponible);
+
+  // 2. Interés
+  let interes = calcularInteresSimple(monto, tasaInteres, plazo);
+
+  // 3. Total a pagar
+  let totalPagar = calcularTotalPagar(monto, interes);
+
+  // 4. Cuota mensual
+  let cuotaMensual = calularCuotaMensual(totalPagar, plazo);
+
+  // 5. Resultado del crédito
+  let aprobado = analizarCredito(capacidadPago, cuotaMensual);
+
+  // Guardar valores globales
+  cuotaCalculada = cuotaMensual;
+  montoCalculado = monto;
+  plazoCalculado = plazo;
+  creditoAprobado = aprobado;
+
+  document.getElementById("resultadoCredito").innerHTML = `
+  Capacidad de pago: ${capacidadPago}<br>
+  Total a pagar: ${totalPagar}<br>
+  Cuota mensual: ${cuotaMensual}<br>
+  RESULTADO: ${aprobado ? "APROBADO" : "RECHAZADO"}
+`;
+  let resultadoCredito = document.getElementById("resultadoCredito");
+
+  if (aprobado) {
+    resultadoCredito.className = "aprobado";
+  } else {
+    resultadoCredito.className = "rechazado";
+  }
+}
+function calcularDisponible(ingresos, egresos) {
+  return ingresos - egresos;
+}
+
+function calculaCapacidadPago(disponible) {
+  return disponible * 0.4;
+}
+
+function calcularInteresSimple(monto, interes, plazo) {
+  return (monto * interes * plazo) / 100;
+}
+
+function calcularTotalPagar(monto, interes) {
+  return monto + interes;
+}
+
+function calularCuotaMensual(totalPagar, plazo) {
+  return totalPagar / (plazo * 12);
+}
+
+function analizarCredito(capacidadPago, cuotaMensual) {
+  return cuotaMensual <= capacidadPago;
+}
