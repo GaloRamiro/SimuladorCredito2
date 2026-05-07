@@ -201,30 +201,59 @@ function calcularCredito() {
 
   if (aprobado) {
     resultadoCredito.className = "aprobado";
+    let btnAsignar = document.getElementById("btnSolicitarCredito");
+    btnAsignar.disabled = false;
   } else {
     resultadoCredito.className = "rechazado";
   }
 }
-function calcularDisponible(ingresos, egresos) {
-  return ingresos - egresos;
+
+function solicitarCredito() {
+  let credito = {
+    cedula: clienteSeleccionado.cedula,
+    nombre: clienteSeleccionado.nombre,
+    apellido: clienteSeleccionado.apellido,
+    monto: montoCalculado,
+    tasa: tasaInteres,
+    plazo: plazoIngresado,
+    cuota: cuotaCalculada,
+  };
+  creditos.push[credito];
+  alert("Crédito solicitado correctamente");
 }
 
-function calculaCapacidadPago(disponible) {
-  return disponible * 0.4;
+function buscarCreditos(cedula) {
+  let creditosEncontrados = [];
+  for (i = 0; i < creditos.length; i++) {
+    let elementoCredito = creditos[i];
+    if (elementoCredito.cedula == cedula) {
+      creditosEncontrados.push(elementoCredito);
+    }
+  }
+  return creditosEncontrados;
 }
 
-function calcularInteresSimple(monto, interes, plazo) {
-  return (monto * interes * plazo) / 100;
-}
-
-function calcularTotalPagar(monto, interes) {
-  return monto + interes;
-}
-
-function calularCuotaMensual(totalPagar, plazo) {
-  return totalPagar / (plazo * 12);
-}
-
-function analizarCredito(capacidadPago, cuotaMensual) {
-  return cuotaMensual <= capacidadPago;
+function pintarCredito(creditos) {
+  const TABLA= document.getElementById("tablaCreditos");
+  let almacenarPintar = "";
+  for (i = 0; i < creditos.length; i++) {
+    let elementoCredito = creditos[i];
+    almacenarPintar += `
+      <tr>
+        <td>${elementoCredito.cedula}</td>
+        <td>${elementoCredito.nombre}</td>
+        <td>${elementoCredito.apellido}</td>
+        <td>${elementoCredito.monto}</td>
+        <td>${elementoCredito.tasa}%</td>
+        <td>${elementoCredito.plazo} meses</td>
+        <td>${elementoCredito.cuota}</td>
+        <td>
+          <button onclick="eliminarCredito(${i})">
+            Eliminar
+          </button>
+        </td>
+      </tr>
+    `;
+TABLA.innerHTML+=almacenarPintar;
+  }
 }
