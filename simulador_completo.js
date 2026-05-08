@@ -283,29 +283,32 @@ function calcularCredito() {
 
   document.getElementById("resultadoCredito").innerHTML = `
   <div class="fila-resultado">
-    💳 <span>Capacidad de pago:</span>
+  <i class="fa-solid fa-credit-card"></i>
+     <span>Capacidad de pago:</span>
     <strong>${capacidadPago.toFixed(2)}</strong>
   </div>
 
   <div class="fila-resultado">
-    💰 <span>Total a pagar:</span>
+  <i class="fa-solid fa-sack-dollar"></i>
+     <span>Total a pagar:</span>
     <strong>${totalPagar.toFixed(2)}</strong>
   </div>
 
   <div class="fila-resultado">
-    📅 <span>Cuota mensual:</span>
+  <i class="fa-solid fa-calendar-days"></i>
+     <span>Cuota mensual:</span>
     <strong>${cuotaMensual.toFixed(2)}</strong>
   </div>
 
   <hr>
 
-  <div class="fila-resultado resultado-final">
-    ${
-      aprobado
-        ? "✅ <span>RESULTADO:</span> <strong>APROBADO</strong>"
-        : "❌ <span>RESULTADO:</span> <strong>RECHAZADO</strong>"
-    }
-  </div>
+<div class="fila-resultado resultado-final">
+  ${
+    aprobado
+      ? '<i class="fa-solid fa-square-check"></i> <span>RESULTADO:</span> <strong>APROBADO</strong>'
+      : '<i class="fa-solid fa-circle-xmark"></i> <span>RESULTADO:</span> <strong>RECHAZADO</strong>'
+  }
+</div>
 `;
   let resultadoCredito = document.getElementById("resultadoCredito");
 
@@ -398,7 +401,6 @@ function pintarCredito(creditos) {
 }
 
 function eliminarCredito(indice) {
-  
   guardarLocalStorage();
   pintarCredito(creditos);
 }
