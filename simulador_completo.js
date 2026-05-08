@@ -46,7 +46,31 @@ function guardarCliente() {
   let valorApellido = recuperaraTexto("txtApellido");
   let valorIngresos = recuperarFloat("campoIngresos");
   let valorEgresos = recuperarFloat("campoEgresos");
+  if (!validarCedula(valorCedula)) {
+    alert("La cédula debe tener exactamente 10 números");
+    return;
+  }
+
   let existente = buscarCliente(valorCedula);
+
+  
+  if (
+    valorCedula.trim() == "" ||
+    valoNombre.trim() == "" ||
+    valorApellido.trim() == ""
+  ) {
+    alert("Complete todos los campos");
+    return;
+  }
+  if (isNaN(valorIngresos) || valorIngresos < 0) {
+    alert("Ingrese ingresos válidos");
+    return;
+  }
+
+  if (isNaN(valorEgresos) || valorEgresos < 0) {
+    alert("Ingrese egresos válidos");
+    return;
+  }
   if (existente == null) {
     let clienteNuevo = {
       cedula: valorCedula,
@@ -120,6 +144,10 @@ function limpiar() {
 }
 
 function eliminarCliente(cedula) {
+  if (tieneCreditos(cedula)) {
+    alert("No puede eliminar un cliente con créditos");
+    return;
+  }
   for (let i = 0; i < clientes.length; i++) {
     if (clientes[i].cedula == cedula) {
       clientes.splice(i, 1);
@@ -131,6 +159,11 @@ function eliminarCliente(cedula) {
 
 function buscarClienteCredito() {
   let buscarCedula = recuperaraTexto("buscarCedulaCredito");
+  if (!validarCedula(buscarCedula)) {
+    alert("Ingrese una cédula válida de 10 números");
+    return;
+  }
+
   let existenteBuscado = buscarCliente(buscarCedula);
   if (existenteBuscado != null) {
     clienteSeleccionado = existenteBuscado;
@@ -164,6 +197,16 @@ function calcularCredito() {
   let monto = recuperarFloat("montoCredito");
   let plazo = recuperarInt("plazoCredito");
 
+  if (isNaN(monto) || monto <= 0) {
+    alert("Ingrese un monto válido");
+    return;
+  }
+
+  if (isNaN(plazo) || plazo <= 0) {
+    alert("Ingrese un plazo válido");
+    return;
+  }
+
   // Datos del cliente
   let ingresos = clienteSeleccionado.ingreso;
   let egresos = clienteSeleccionado.egreso;
@@ -192,39 +235,59 @@ function calcularCredito() {
   creditoAprobado = aprobado;
 
   document.getElementById("resultadoCredito").innerHTML = `
-  Capacidad de pago: ${capacidadPago}<br>
-  Total a pagar: ${totalPagar}<br>
-  Cuota mensual: ${cuotaMensual}<br>
+  Capacidad de pago: ${capacidadPago.toFixed(2)}<br>
+  Total a pagar: ${totalPagar.toFixed(2)}<br>
+  Cuota mensual: ${cuotaMensual.toFixed(2)}<br>
   RESULTADO: ${aprobado ? "APROBADO" : "RECHAZADO"}
 `;
   let resultadoCredito = document.getElementById("resultadoCredito");
 
   if (aprobado) {
-    resultadoCredito.className = "aprobado";
+    resultadoCredito.classList.remove("rechazado");
+    resultadoCredito.classList.add("aprobado");
+
     let btnAsignar = document.getElementById("btnSolicitarCredito");
+
     btnAsignar.disabled = false;
   } else {
-    resultadoCredito.className = "rechazado";
+    resultadoCredito.classList.remove("aprobado");
+    resultadoCredito.classList.add("rechazado");
+
+    let btnAsignar = document.getElementById("btnSolicitarCredito");
+
+    btnAsignar.disabled = true;
   }
 }
 
 function solicitarCredito() {
+  if (clienteSeleccionado == null) {
+    alert("Debe seleccionar un cliente");
+    return;
+  }
+
+  if (!creditoAprobado) {
+    alert("El crédito no está aprobado");
+    return;
+  }
   let credito = {
     cedula: clienteSeleccionado.cedula,
     nombre: clienteSeleccionado.nombre,
     apellido: clienteSeleccionado.apellido,
     monto: montoCalculado,
     tasa: tasaInteres,
-    plazo: plazoIngresado,
+    plazo: plazoCalculado,
     cuota: cuotaCalculada,
   };
-  creditos.push[credito];
+  creditos.push(credito);
+
   alert("Crédito solicitado correctamente");
+
+  pintarCredito(creditos);
 }
 
 function buscarCreditos(cedula) {
   let creditosEncontrados = [];
-  for (i = 0; i < creditos.length; i++) {
+  for (let i = 0; i < creditos.length; i++) {
     let elementoCredito = creditos[i];
     if (elementoCredito.cedula == cedula) {
       creditosEncontrados.push(elementoCredito);
@@ -232,21 +295,29 @@ function buscarCreditos(cedula) {
   }
   return creditosEncontrados;
 }
+function tieneCreditos(cedula) {
+  for (let i = 0; i < creditos.length; i++) {
+    if (creditos[i].cedula == cedula) {
+      return true;
+    }
+  }
 
+  return false;
+}
 function pintarCredito(creditos) {
-  const TABLA= document.getElementById("tablaCreditos");
+  const TABLA = document.getElementById("tablaCreditos");
   let almacenarPintar = "";
-  for (i = 0; i < creditos.length; i++) {
+  for (let i = 0; i < creditos.length; i++) {
     let elementoCredito = creditos[i];
     almacenarPintar += `
       <tr>
         <td>${elementoCredito.cedula}</td>
         <td>${elementoCredito.nombre}</td>
         <td>${elementoCredito.apellido}</td>
-        <td>${elementoCredito.monto}</td>
+        <td>${elementoCredito.monto.toFixed(2)}</td>
         <td>${elementoCredito.tasa}%</td>
-        <td>${elementoCredito.plazo} meses</td>
-        <td>${elementoCredito.cuota}</td>
+        <td>${elementoCredito.plazo} años</td>
+        <td>${elementoCredito.cuota.toFixed(2)}</td>
         <td>
           <button onclick="eliminarCredito(${i})">
             Eliminar
@@ -254,6 +325,17 @@ function pintarCredito(creditos) {
         </td>
       </tr>
     `;
-TABLA.innerHTML+=almacenarPintar;
   }
+  TABLA.innerHTML = almacenarPintar;
+}
+
+function eliminarCredito(indice) {
+  creditos.splice(indice, 1);
+  pintarCredito(creditos);
+}
+
+function buscarCreditosCliente() {
+  let buscaCedula = recuperaraTexto("buscarCedulaListado");
+  let lista = buscarCreditos(buscaCedula);
+  pintarCredito(lista);
 }

@@ -56,3 +56,18 @@ function calularCuotaMensual(totalPagar, plazo) {
 function analizarCredito(capacidadPago, cuotaMensual) {
   return cuotaMensual <= capacidadPago;
 }
+function validarCedula(cedula) {
+  if (cedula.length != 10) {
+    return false;
+  }
+
+  for (let i = 0; i < cedula.length; i++) {
+    let caracter = cedula.charAt(i);
+
+    if (caracter < "0" || caracter > "9") {
+      return false;
+    }
+  }
+
+  return true;
+}
