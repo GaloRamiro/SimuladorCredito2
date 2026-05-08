@@ -1,5 +1,5 @@
-let clientes = [];
-let creditos = [];
+let clientes = JSON.parse(localStorage.getItem("clientes")) || [];
+let creditos = JSON.parse(localStorage.getItem("creditos")) || [];
 
 let tasaInteres = 15;
 let clienteSeleccionado = null;
@@ -7,7 +7,12 @@ let cuotaCalculada = 0;
 let montoCalculado = 0;
 let plazoCalculado = 0;
 let creditoAprobado = false;
+// ================= LOCALSTORAGE =================
 
+function guardarLocalStorage() {
+  localStorage.setItem("clientes", JSON.stringify(clientes));
+  localStorage.setItem("creditos", JSON.stringify(creditos));
+}
 // ================= SECCIONES =================
 
 // Oculta todas las secciones de la página
@@ -107,12 +112,15 @@ function guardarCliente() {
 
     clientes.push(clienteNuevo);
 
+    guardarLocalStorage();
+
     mostrarAlertaBonita("Cliente creado");
   } else {
     existente.nombre = valoNombre;
     existente.apellido = valorApellido;
     existente.ingreso = valorIngresos;
     existente.egreso = valorEgresos;
+    guardarLocalStorage();
 
     mostrarAlertaBonita("Cliente actualizado");
   }
@@ -179,12 +187,14 @@ function limpiar() {
 
 function eliminarCliente(cedula) {
   if (tieneCreditos(cedula)) {
-   mostrarAlertaBonita("No puede eliminar un cliente con créditos");
+    mostrarAlertaBonita("No puede eliminar un cliente con créditos");
     return;
   }
   for (let i = 0; i < clientes.length; i++) {
     if (clientes[i].cedula == cedula) {
       clientes.splice(i, 1);
+      guardarLocalStorage();
+
       break;
     }
   }
@@ -336,6 +346,7 @@ function solicitarCredito() {
     cuota: cuotaCalculada,
   };
   creditos.push(credito);
+  guardarLocalStorage();
 
   mostrarAlertaBonita("Crédito solicitado correctamente");
 
@@ -387,7 +398,8 @@ function pintarCredito(creditos) {
 }
 
 function eliminarCredito(indice) {
-  creditos.splice(indice, 1);
+  
+  guardarLocalStorage();
   pintarCredito(creditos);
 }
 
@@ -396,5 +408,10 @@ function buscarCreditosCliente() {
   let lista = buscarCreditos(buscaCedula);
   pintarCredito(lista);
 }
-
+function guardarLocalStorage() {
+  localStorage.setItem("clientes", JSON.stringify(clientes));
+  localStorage.setItem("creditos", JSON.stringify(creditos));
+}
 mostrarSeccion("parametros");
+pintarClientes();
+pintarCredito(creditos);
