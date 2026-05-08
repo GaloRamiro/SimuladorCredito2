@@ -339,3 +339,6 @@ function buscarCreditosCliente() {
   let lista = buscarCreditos(buscaCedula);
   pintarCredito(lista);
 }
+
+
+mostrarSeccion("parametros");
