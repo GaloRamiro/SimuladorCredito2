@@ -46,31 +46,56 @@ function guardarCliente() {
   let valorApellido = recuperaraTexto("txtApellido");
   let valorIngresos = recuperarFloat("campoIngresos");
   let valorEgresos = recuperarFloat("campoEgresos");
-  if (!validarCedula(valorCedula)) {
-    alert("La cédula debe tener exactamente 10 números");
+
+  let hayError = false;
+
+  limpiarError("txtCedula");
+  limpiarError("txtNombre");
+  limpiarError("txtApellido");
+  limpiarError("campoIngresos");
+  limpiarError("campoEgresos");
+
+  // VALIDAR CÉDULA
+  if (valorCedula.trim() == "") {
+    mostrarError("txtCedula", "Ingrese la cédula");
+    hayError = true;
+  } else if (!validarCedula(valorCedula)) {
+    mostrarError("txtCedula", "La cédula debe tener exactamente 10 números");
+    hayError = true;
+  }
+
+  // VALIDAR NOMBRE
+  if (valoNombre.trim() == "") {
+    mostrarError("txtNombre", "Ingrese el nombre");
+    hayError = true;
+  }
+
+  // VALIDAR APELLIDO
+  if (valorApellido.trim() == "") {
+    mostrarError("txtApellido", "Ingrese el apellido");
+    hayError = true;
+  }
+
+  // VALIDAR INGRESOS
+  if (isNaN(valorIngresos) || valorIngresos < 0) {
+    mostrarError("campoIngresos", "Ingrese ingresos válidos");
+    hayError = true;
+  }
+
+  // VALIDAR EGRESOS
+  if (isNaN(valorEgresos) || valorEgresos < 0) {
+    mostrarError("campoEgresos", "Ingrese egresos válidos");
+    hayError = true;
+  }
+
+  // DETENER SI HAY ERRORES
+  if (hayError) {
     return;
   }
 
   let existente = buscarCliente(valorCedula);
 
-  
-  if (
-    valorCedula.trim() == "" ||
-    valoNombre.trim() == "" ||
-    valorApellido.trim() == ""
-  ) {
-    alert("Complete todos los campos");
-    return;
-  }
-  if (isNaN(valorIngresos) || valorIngresos < 0) {
-    alert("Ingrese ingresos válidos");
-    return;
-  }
-
-  if (isNaN(valorEgresos) || valorEgresos < 0) {
-    alert("Ingrese egresos válidos");
-    return;
-  }
+  // CREAR O ACTUALIZAR
   if (existente == null) {
     let clienteNuevo = {
       cedula: valorCedula,
@@ -79,16 +104,20 @@ function guardarCliente() {
       ingreso: valorIngresos,
       egreso: valorEgresos,
     };
+
     clientes.push(clienteNuevo);
-    alert("Cliente Creado");
+
+    mostrarAlertaBonita("Cliente creado");
   } else {
     existente.nombre = valoNombre;
     existente.apellido = valorApellido;
     existente.ingreso = valorIngresos;
     existente.egreso = valorEgresos;
-    alert("Cliente actualizado");
+
+    mostrarAlertaBonita("Cliente actualizado");
   }
-  pintarClientes(); // Refresca tabla
+
+  pintarClientes();
   limpiar();
 }
 
@@ -141,11 +170,16 @@ function limpiar() {
   mostrarTextoEnCaja("txtApellido", "");
   mostrarTextoEnCaja("campoIngresos", "");
   mostrarTextoEnCaja("campoEgresos", "");
+  limpiarError("txtCedula");
+  limpiarError("txtNombre");
+  limpiarError("txtApellido");
+  limpiarError("campoIngresos");
+  limpiarError("campoEgresos");
 }
 
 function eliminarCliente(cedula) {
   if (tieneCreditos(cedula)) {
-    alert("No puede eliminar un cliente con créditos");
+   mostrarAlertaBonita("No puede eliminar un cliente con créditos");
     return;
   }
   for (let i = 0; i < clientes.length; i++) {
@@ -160,13 +194,16 @@ function eliminarCliente(cedula) {
 function buscarClienteCredito() {
   let buscarCedula = recuperaraTexto("buscarCedulaCredito");
   if (!validarCedula(buscarCedula)) {
-    alert("Ingrese una cédula válida de 10 números");
+    mostrarError("buscarCedulaCredito", "Ingrese una cédula válida");
     return;
   }
 
   let existenteBuscado = buscarCliente(buscarCedula);
   if (existenteBuscado != null) {
     clienteSeleccionado = existenteBuscado;
+    document.getElementById("resultadoCredito").innerHTML = "";
+
+    document.getElementById("btnSolicitarCredito").disabled = true;
     let contenido = `
       <h3>Cliente encontrado</h3>
       <p><strong>Cédula:</strong> ${existenteBuscado.cedula}</p>
@@ -198,12 +235,12 @@ function calcularCredito() {
   let plazo = recuperarInt("plazoCredito");
 
   if (isNaN(monto) || monto <= 0) {
-    alert("Ingrese un monto válido");
+    mostrarError("montoCredito", "Ingrese un monto válido");
     return;
   }
 
   if (isNaN(plazo) || plazo <= 0) {
-    alert("Ingrese un plazo válido");
+    mostrarError("plazoCredito", "Ingrese un plazo válido");
     return;
   }
 
@@ -235,10 +272,30 @@ function calcularCredito() {
   creditoAprobado = aprobado;
 
   document.getElementById("resultadoCredito").innerHTML = `
-  Capacidad de pago: ${capacidadPago.toFixed(2)}<br>
-  Total a pagar: ${totalPagar.toFixed(2)}<br>
-  Cuota mensual: ${cuotaMensual.toFixed(2)}<br>
-  RESULTADO: ${aprobado ? "APROBADO" : "RECHAZADO"}
+  <div class="fila-resultado">
+    💳 <span>Capacidad de pago:</span>
+    <strong>${capacidadPago.toFixed(2)}</strong>
+  </div>
+
+  <div class="fila-resultado">
+    💰 <span>Total a pagar:</span>
+    <strong>${totalPagar.toFixed(2)}</strong>
+  </div>
+
+  <div class="fila-resultado">
+    📅 <span>Cuota mensual:</span>
+    <strong>${cuotaMensual.toFixed(2)}</strong>
+  </div>
+
+  <hr>
+
+  <div class="fila-resultado resultado-final">
+    ${
+      aprobado
+        ? "✅ <span>RESULTADO:</span> <strong>APROBADO</strong>"
+        : "❌ <span>RESULTADO:</span> <strong>RECHAZADO</strong>"
+    }
+  </div>
 `;
   let resultadoCredito = document.getElementById("resultadoCredito");
 
@@ -261,12 +318,12 @@ function calcularCredito() {
 
 function solicitarCredito() {
   if (clienteSeleccionado == null) {
-    alert("Debe seleccionar un cliente");
+    mostrarAlertaBonita("Debe seleccionar un cliente");
     return;
   }
 
   if (!creditoAprobado) {
-    alert("El crédito no está aprobado");
+    mostrarAlertaBonita("El crédito no está aprobado");
     return;
   }
   let credito = {
@@ -280,7 +337,7 @@ function solicitarCredito() {
   };
   creditos.push(credito);
 
-  alert("Crédito solicitado correctamente");
+  mostrarAlertaBonita("Crédito solicitado correctamente");
 
   pintarCredito(creditos);
 }
@@ -339,6 +396,5 @@ function buscarCreditosCliente() {
   let lista = buscarCreditos(buscaCedula);
   pintarCredito(lista);
 }
-
 
 mostrarSeccion("parametros");

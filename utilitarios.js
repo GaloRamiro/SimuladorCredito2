@@ -71,3 +71,78 @@ function validarCedula(cedula) {
 
   return true;
 }
+
+function mostrarError(idInput, mensaje) {
+  let input = document.getElementById(idInput);
+
+  input.classList.add("input-error");
+
+  let errorAnterior = document.getElementById(idInput + "-error");
+
+  if (errorAnterior) {
+    errorAnterior.remove();
+  }
+
+  let textoError = document.createElement("div");
+
+  textoError.className = "mensaje-error";
+
+  textoError.id = idInput + "-error";
+
+  textoError.innerText = mensaje;
+
+  input.insertAdjacentElement("afterend", textoError);
+
+  setTimeout(function () {
+    input.classList.remove("input-error");
+  }, 600);
+}
+function limpiarError(idInput) {
+  let error = document.getElementById(idInput + "-error");
+
+  if (error) {
+    error.remove();
+  }
+}
+
+function mostrarAlertaBonita(mensaje) {
+  let alertaAnterior = document.querySelector(".overlay-alerta");
+
+  if (alertaAnterior) {
+    alertaAnterior.remove();
+  }
+
+  let overlay = document.createElement("div");
+
+  overlay.className = "overlay-alerta";
+
+  overlay.innerHTML = `
+    
+    <div class="alerta-modal">
+
+      <div class="alerta-check">
+        ✅
+      </div>
+
+      <h2>¡Éxito!</h2>
+
+      <p>${mensaje}</p>
+
+    </div>
+
+  `;
+
+  document.body.appendChild(overlay);
+
+  setTimeout(() => {
+    overlay.classList.add("mostrar");
+  }, 50);
+
+  setTimeout(() => {
+    overlay.classList.remove("mostrar");
+
+    setTimeout(() => {
+      overlay.remove();
+    }, 400);
+  }, 2200);
+}

@@ -6,133 +6,76 @@
 
     <title>Sistema de Créditos</title>
 
-    <link
-      rel="icon"
-      type="image/svg+xml"
-      href="imagenes/LogoSimulador.svg"
-    />
+    <link rel="icon" type="image/svg+xml" href="imagenes/LogoSimulador.svg" />
 
     <link rel="stylesheet" href="simulador_completo.css" />
   </head>
 
   <body>
-
     <!-- HEADER -->
     <header>
-
-      <img
-        src="imagenes/LogoSimulador.svg"
-        class="logo"
-        alt="Logo Simulador"
-      />
+      <img src="imagenes/LogoSimulador.svg" class="logo" alt="Logo Simulador" />
 
       <h1>Sistema Básico de Créditos</h1>
-
     </header>
 
     <!-- NAVEGACIÓN -->
     <nav>
+      <button onclick="mostrarSeccion('parametros')">Parámetros</button>
 
-      <button onclick="mostrarSeccion('parametros')">
-        Parámetros
-      </button>
+      <button onclick="mostrarSeccion('clientes')">Clientes</button>
 
-      <button onclick="mostrarSeccion('clientes')">
-        Clientes
-      </button>
-
-      <button onclick="mostrarSeccion('credito')">
-        Créditos
-      </button>
+      <button onclick="mostrarSeccion('credito')">Créditos</button>
 
       <button onclick="mostrarSeccion('listaCreditos')">
         Crédito Registrado
       </button>
-
     </nav>
 
     <!-- PARÁMETROS -->
     <section id="parametros">
-
       <h2>Configurar Parámetros</h2>
 
       <label>Tasa de interés:</label>
 
       <div class="input-inline">
-
-        <input
-          type="number"
-          id="tasaInteres"
-          min="10"
-          max="20"
-          value="15"
-        />
+        <input type="number" id="tasaInteres" min="10" max="20" value="15" />
 
         <span>%</span>
-
       </div>
 
-      <button onclick="guardarTasa()">
-        Guardar tasa
-      </button>
+      <button onclick="guardarTasa()">Guardar tasa</button>
 
       <p id="mensajeTasa"></p>
-
     </section>
 
     <!-- CLIENTES -->
     <section id="clientes">
-
       <h2>Registro de Clientes</h2>
 
       <div class="grupo-inputs">
-
         <input
           type="text"
           id="txtCedula"
           placeholder="Ingrese el número de cédula"
         />
 
-        <input
-          type="text"
-          id="txtNombre"
-          placeholder="Ingrese su nombre"
-        />
+        <input type="text" id="txtNombre" placeholder="Ingrese su nombre" />
 
-        <input
-          type="text"
-          id="txtApellido"
-          placeholder="Ingrese su apellido"
-        />
+        <input type="text" id="txtApellido" placeholder="Ingrese su apellido" />
 
-        <input
-          type="number"
-          id="campoIngresos"
-          placeholder="Ingresos"
-        />
+        <input type="number" id="campoIngresos" placeholder="Ingresos" />
 
-        <input
-          type="number"
-          id="campoEgresos"
-          placeholder="Egresos"
-        />
-
+        <input type="number" id="campoEgresos" placeholder="Egresos" />
       </div>
 
       <div class="grupo-botones">
+        <button onclick="guardarCliente()">Guardar cliente</button>
 
-        <button onclick="guardarCliente()">
-          Guardar cliente
-        </button>
-
-        <button onclick="limpiar()">
-          Limpiar
-        </button>
-
+        <button onclick="limpiar()">Limpiar</button>
       </div>
 
       <table>
-
         <thead>
           <tr>
             <th>Cédula</th>
@@ -145,30 +88,22 @@
         </thead>
 
         <tbody id="tablaClientes"></tbody>
-
       </table>
-
     </section>
 
     <!-- CRÉDITO -->
     <section id="credito">
-
       <h2>Solicitar Crédito</h2>
 
       <div class="grupo-busqueda">
-
         <input type="text" id="buscarCedulaCredito" />
 
-        <button onclick="buscarClienteCredito()">
-          Buscar cliente
-        </button>
-
+        <button onclick="buscarClienteCredito()">Buscar cliente</button>
       </div>
 
       <div id="datosClienteCredito" class="card"></div>
 
       <div class="grupo-inputs">
-
         <input
           type="number"
           id="montoCredito"
@@ -180,50 +115,36 @@
           id="plazoCredito"
           placeholder="Ingrese el plazo de su crédito"
         />
-
       </div>
 
-      <button onclick="calcularCredito()">
-        Calcular crédito
-      </button>
+      <div class="grupo-botones-credito">
+        <button onclick="calcularCredito()">Calcular crédito</button>
+
+        <button id="btnSolicitarCredito" onclick="solicitarCredito()" disabled>
+          Solicitar crédito
+        </button>
+      </div>
 
       <div id="resultadoCredito"></div>
-
-      <button
-        id="btnSolicitarCredito"
-        onclick="solicitarCredito()"
-        disabled
-      >
-        Solicitar crédito
-      </button>
-
     </section>
 
     <!-- LISTADO -->
     <section id="listaCreditos">
-
       <h2>Créditos Registrados</h2>
 
       <div class="grupo-busqueda">
-
         <input
           type="text"
           id="buscarCedulaListado"
           placeholder="Ingrese número de cédula"
         />
 
-        <button onclick="buscarCreditosCliente()">
-          Buscar
-        </button>
+        <button onclick="buscarCreditosCliente()">Buscar</button>
 
-        <button onclick="pintarCredito(creditos)">
-          Ver todos
-        </button>
-
+        <button onclick="pintarCredito(creditos)">Ver todos</button>
       </div>
 
       <table>
-
         <thead>
           <tr>
             <th>Cédula</th>
@@ -233,17 +154,15 @@
             <th>Tasa</th>
             <th>Plazo</th>
             <th>Cuota</th>
+            <th>Acciones</th>
           </tr>
         </thead>
 
         <tbody id="tablaCreditos"></tbody>
-
       </table>
-
     </section>
 
     <script src="simulador_completo.js"></script>
     <script src="utilitarios.js"></script>
-
   </body>
 </html>
