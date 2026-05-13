@@ -1,3 +1,4 @@
+//variables
 let clientes = [];
 let creditos = [];
 
