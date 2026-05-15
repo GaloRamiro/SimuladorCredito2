@@ -102,6 +102,15 @@ function guardarCliente() {
 
   let existente = buscarCliente(valorCedula);
 
+  // ================= EXAMEN =================
+  // VALIDAR CÉDULA DUPLICADA SOLO EN CREAR
+
+  if (existente != null && clienteSeleccionado == null) {
+    mostrarAlertaBonita("La cédula ya existe");
+    return;
+  }
+  //=================EXAMEN====================
+
   // CREAR O ACTUALIZAR
   if (existente == null) {
     let clienteNuevo = {
@@ -188,6 +197,15 @@ function limpiar() {
 }
 
 function eliminarCliente(cedula) {
+  // ================= EXAMEN =================
+  // CONFIRMAR ELIMINAR CLIENTE
+
+  let confirmar = confirm("¿Desea eliminar el cliente?");
+
+  if (!confirmar) {
+    return;
+  }
+  //==================================================
   if (tieneCreditos(cedula)) {
     mostrarAlertaBonita("No puede eliminar un cliente con créditos");
     return;
@@ -337,6 +355,14 @@ function solicitarCredito() {
     return;
   }
 
+  // ================= EXAMEN =================
+  // EVITAR CRÉDITOS DUPLICADOS
+
+  if (tieneCreditos(clienteSeleccionado.cedula)) {
+    mostrarAlertaBonita("El cliente ya tiene un crédito");
+    return;
+  }
+
   if (!creditoAprobado) {
     mostrarAlertaBonita("El crédito no está aprobado");
     return;
@@ -359,6 +385,7 @@ function solicitarCredito() {
 }
 
 function buscarCreditos(cedula) {
+
   let creditosEncontrados = [];
   for (let i = 0; i < creditos.length; i++) {
     let elementoCredito = creditos[i];
@@ -400,9 +427,15 @@ function pintarCredito(creditos) {
     `;
   }
   TABLA.innerHTML = almacenarPintar;
+  // ================= EXAMEN =================
+  // MOSTRAR TOTAL PRESTADO
+
+  document.getElementById("totalPrestado").innerHTML = calcularTotalPrestado();
+  //==================================
 }
 
 function eliminarCredito(indice) {
+<<<<<<< HEAD
 
   creditos.splice(indice, 1);
   //Eliminar localStorage en creditos 
@@ -411,6 +444,21 @@ function eliminarCredito(indice) {
     JSON.stringify(creditos)
   );
 
+=======
+  // ================= EXAMEN =================
+  // CONFIRMAR ELIMINAR CRÉDITO
+
+  let confirmar = confirm("¿Desea eliminar el crédito?");
+
+  if (!confirmar) {
+    return;
+  }
+  //===========================================
+
+  creditos.splice(indice, 1);
+  //Eliminar localStorage en creditos
+  localStorage.setItem("creditos", JSON.stringify(creditos));
+>>>>>>> dev
   pintarCredito(creditos);
 }
 
@@ -419,10 +467,41 @@ function buscarCreditosCliente() {
   let lista = buscarCreditos(buscaCedula);
   pintarCredito(lista);
 }
+<<<<<<< HEAD
 function guardarLocalStorage() {
   localStorage.setItem("clientes", JSON.stringify(clientes));
   localStorage.setItem("creditos", JSON.stringify(creditos));
 }
+=======
+
+// ================= EXAMEN =================
+// CALCULAR TOTAL PRESTADO
+
+function calcularTotalPrestado() {
+  let total = 0;
+
+  for (let i = 0; i < creditos.length; i++) {
+    total += creditos[i].monto;
+  }
+
+  return total;
+}
+////========================
+
+// ================= EXAMEN =================
+// LIMPIAR LOCAL STORAGE
+
+function limpiarDatos() {
+  localStorage.clear();
+
+  clientes = [];
+  creditos = [];
+
+  pintarClientes();
+  pintarCredito(creditos);
+}
+///
+>>>>>>> dev
 mostrarSeccion("parametros");
 pintarClientes();
 pintarCredito(creditos);
