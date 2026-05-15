@@ -15,6 +15,8 @@ function guardarLocalStorage() {
   localStorage.setItem("clientes", JSON.stringify(clientes));
   localStorage.setItem("creditos", JSON.stringify(creditos));
 }
+
+
 // ================= SECCIONES =================
 
 // Oculta todas las secciones de la página
@@ -194,6 +196,8 @@ function limpiar() {
   limpiarError("txtApellido");
   limpiarError("campoIngresos");
   limpiarError("campoEgresos");
+
+  clienteSeleccionado = null;
 }
 
 function eliminarCliente(cedula) {
@@ -435,16 +439,7 @@ function pintarCredito(creditos) {
 }
 
 function eliminarCredito(indice) {
-<<<<<<< HEAD
 
-  creditos.splice(indice, 1);
-  //Eliminar localStorage en creditos 
-  localStorage.setItem(
-    "creditos",
-    JSON.stringify(creditos)
-  );
-
-=======
   // ================= EXAMEN =================
   // CONFIRMAR ELIMINAR CRÉDITO
 
@@ -456,23 +451,17 @@ function eliminarCredito(indice) {
   //===========================================
 
   creditos.splice(indice, 1);
-  //Eliminar localStorage en creditos
-  localStorage.setItem("creditos", JSON.stringify(creditos));
->>>>>>> dev
+
+  guardarLocalStorage();
+
   pintarCredito(creditos);
 }
-
 function buscarCreditosCliente() {
   let buscaCedula = recuperaraTexto("buscarCedulaListado");
   let lista = buscarCreditos(buscaCedula);
   pintarCredito(lista);
 }
-<<<<<<< HEAD
-function guardarLocalStorage() {
-  localStorage.setItem("clientes", JSON.stringify(clientes));
-  localStorage.setItem("creditos", JSON.stringify(creditos));
-}
-=======
+
 
 // ================= EXAMEN =================
 // CALCULAR TOTAL PRESTADO
@@ -501,7 +490,7 @@ function limpiarDatos() {
   pintarCredito(creditos);
 }
 ///
->>>>>>> dev
+
 mostrarSeccion("parametros");
 pintarClientes();
 pintarCredito(creditos);
