@@ -1,6 +1,7 @@
-//variables
-let clientes = [];
-let creditos = [];
+
+let clientes = JSON.parse(localStorage.getItem("clientes")) || [];
+let creditos = JSON.parse(localStorage.getItem("creditos")) || [];
+
 
 let tasaInteres = 15;
 let clienteSeleccionado = null;
@@ -8,7 +9,12 @@ let cuotaCalculada = 0;
 let montoCalculado = 0;
 let plazoCalculado = 0;
 let creditoAprobado = false;
+// ================= LOCALSTORAGE =================
 
+function guardarLocalStorage() {
+  localStorage.setItem("clientes", JSON.stringify(clientes));
+  localStorage.setItem("creditos", JSON.stringify(creditos));
+}
 // ================= SECCIONES =================
 
 // Oculta todas las secciones de la página
@@ -117,12 +123,15 @@ function guardarCliente() {
 
     clientes.push(clienteNuevo);
 
+    guardarLocalStorage();
+
     mostrarAlertaBonita("Cliente creado");
   } else {
     existente.nombre = valoNombre;
     existente.apellido = valorApellido;
     existente.ingreso = valorIngresos;
     existente.egreso = valorEgresos;
+    guardarLocalStorage();
 
     mostrarAlertaBonita("Cliente actualizado");
   }
@@ -204,6 +213,8 @@ function eliminarCliente(cedula) {
   for (let i = 0; i < clientes.length; i++) {
     if (clientes[i].cedula == cedula) {
       clientes.splice(i, 1);
+      guardarLocalStorage();
+
       break;
     }
   }
@@ -292,29 +303,32 @@ function calcularCredito() {
 
   document.getElementById("resultadoCredito").innerHTML = `
   <div class="fila-resultado">
-    💳 <span>Capacidad de pago:</span>
+  <i class="fa-solid fa-credit-card"></i>
+     <span>Capacidad de pago:</span>
     <strong>${capacidadPago.toFixed(2)}</strong>
   </div>
 
   <div class="fila-resultado">
-    💰 <span>Total a pagar:</span>
+  <i class="fa-solid fa-sack-dollar"></i>
+     <span>Total a pagar:</span>
     <strong>${totalPagar.toFixed(2)}</strong>
   </div>
 
   <div class="fila-resultado">
-    📅 <span>Cuota mensual:</span>
+  <i class="fa-solid fa-calendar-days"></i>
+     <span>Cuota mensual:</span>
     <strong>${cuotaMensual.toFixed(2)}</strong>
   </div>
 
   <hr>
 
-  <div class="fila-resultado resultado-final">
-    ${
-      aprobado
-        ? "✅ <span>RESULTADO:</span> <strong>APROBADO</strong>"
-        : "❌ <span>RESULTADO:</span> <strong>RECHAZADO</strong>"
-    }
-  </div>
+<div class="fila-resultado resultado-final">
+  ${
+    aprobado
+      ? '<i class="fa-solid fa-square-check"></i> <span>RESULTADO:</span> <strong>APROBADO</strong>'
+      : '<i class="fa-solid fa-circle-xmark"></i> <span>RESULTADO:</span> <strong>RECHAZADO</strong>'
+  }
+</div>
 `;
   let resultadoCredito = document.getElementById("resultadoCredito");
 
@@ -363,6 +377,7 @@ function solicitarCredito() {
     cuota: cuotaCalculada,
   };
   creditos.push(credito);
+  guardarLocalStorage();
 
   mostrarAlertaBonita("Crédito solicitado correctamente");
 
@@ -420,6 +435,7 @@ function pintarCredito(creditos) {
 }
 
 function eliminarCredito(indice) {
+
   // ================= EXAMEN =================
   // CONFIRMAR ELIMINAR CRÉDITO
 
@@ -433,6 +449,16 @@ function eliminarCredito(indice) {
   creditos.splice(indice, 1);
   //Eliminar localStorage en creditos
   localStorage.setItem("creditos", JSON.stringify(creditos));
+
+
+  creditos.splice(indice, 1);
+  //Eliminar localStorage en creditos 
+  localStorage.setItem(
+    "creditos",
+    JSON.stringify(creditos)
+  );
+
+
   pintarCredito(creditos);
 }
 
@@ -441,6 +467,7 @@ function buscarCreditosCliente() {
   let lista = buscarCreditos(buscaCedula);
   pintarCredito(lista);
 }
+
 
 // ================= EXAMEN =================
 // CALCULAR TOTAL PRESTADO
@@ -469,4 +496,12 @@ function limpiarDatos() {
   pintarCredito(creditos);
 }
 ///
+
+function guardarLocalStorage() {
+  localStorage.setItem("clientes", JSON.stringify(clientes));
+  localStorage.setItem("creditos", JSON.stringify(creditos));
+}
+
 mostrarSeccion("parametros");
+pintarClientes();
+pintarCredito(creditos);

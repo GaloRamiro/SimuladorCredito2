@@ -118,19 +118,18 @@ function mostrarAlertaBonita(mensaje) {
 
   overlay.innerHTML = `
     
-    <div class="alerta-modal">
+<div class="alerta-modal">
 
-      <div class="alerta-check">
-        ✅
-      </div>
+  <div class="alerta-check">
+    <i class="fa-solid fa-circle-check"></i>
+  </div>
 
-      <h2>¡Éxito!</h2>
+  <h2>¡Éxito!</h2>
 
-      <p>${mensaje}</p>
+  <p>${mensaje}</p>
 
-    </div>
-
-  `;
+</div>
+`;
 
   document.body.appendChild(overlay);
 
