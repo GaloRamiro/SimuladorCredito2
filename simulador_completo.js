@@ -389,6 +389,11 @@ function pintarCredito(creditos) {
 
 function eliminarCredito(indice) {
   creditos.splice(indice, 1);
+  //Eliminar localStorage en creditos 
+  localStorage.setItem(
+    "creditos",
+    JSON.stringify(creditos)
+  );
   pintarCredito(creditos);
 }
 
