@@ -1,11 +1,7 @@
-<<<<<<< HEAD
+
 let clientes = JSON.parse(localStorage.getItem("clientes")) || [];
 let creditos = JSON.parse(localStorage.getItem("creditos")) || [];
-=======
-//variables
-let clientes = [];
-let creditos = [];
->>>>>>> dev
+
 
 let tasaInteres = 15;
 let clienteSeleccionado = null;
@@ -407,16 +403,14 @@ function pintarCredito(creditos) {
 }
 
 function eliminarCredito(indice) {
-<<<<<<< HEAD
-  guardarLocalStorage();
-=======
+
   creditos.splice(indice, 1);
   //Eliminar localStorage en creditos 
   localStorage.setItem(
     "creditos",
     JSON.stringify(creditos)
   );
->>>>>>> dev
+
   pintarCredito(creditos);
 }
 
