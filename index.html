@@ -33,6 +33,7 @@
       <button onclick="mostrarSeccion('listaCreditos')">
         Crédito Registrado
       </button>
+      <button onclick="mostrarSeccion('acerca')">Acerca de</button>
     </nav>
 
     <!-- PARÁMETROS -->
@@ -50,6 +51,11 @@
       <button onclick="guardarTasa()">Guardar tasa</button>
 
       <p id="mensajeTasa"></p>
+      <label>Monto máximo:</label>
+
+      <div class="input-inline">
+        <input type="number" id="montoMaximo" value="5000" />
+      </div>
     </section>
 
     <!-- CLIENTES -->
@@ -70,6 +76,8 @@
         <input type="number" id="campoIngresos" placeholder="Ingresos" />
 
         <input type="number" id="campoEgresos" placeholder="Egresos" />
+
+        <input type="text" id="txtTelefono" placeholder="Teléfono" />
       </div>
 
       <div class="grupo-botones">
@@ -86,6 +94,8 @@
             <th>Apellido</th>
             <th>Ingresos</th>
             <th>Egresos</th>
+
+            <th>Teléfono</th>
             <th>Acciones</th>
           </tr>
         </thead>
@@ -145,6 +155,7 @@
         <button onclick="buscarCreditosCliente()">Buscar</button>
 
         <button onclick="pintarCredito(creditos)">Ver todos</button>
+        <button onclick="mostrarCreditosVIP()">Créditos VIP</button>
       </div>
 
       <table>
@@ -163,8 +174,25 @@
 
         <tbody id="tablaCreditos"></tbody>
       </table>
+      <h3>Total prestado: $<span id="totalPrestado">0</span></h3>
     </section>
+    <section id="acerca">
+      <h2>Acerca del desarrollador</h2>
 
+      <div class="card">
+        <h3>Galo Cisneros</h3>
+
+        <p><strong>Carrera:</strong> Desarrollo de Software</p>
+
+        <p><strong>Instagram:</strong> @galo</p>
+
+        <p><strong>Frase:</strong> "La práctica hace al programador"</p>
+
+        <p>
+          Sistema desarrollado para la simulación y administración de créditos.
+        </p>
+      </div>
+    </section>
     <script src="simulador_completo.js"></script>
     <script src="utilitarios.js"></script>
   </body>

@@ -1,9 +1,8 @@
-
 let clientes = JSON.parse(localStorage.getItem("clientes")) || [];
 let creditos = JSON.parse(localStorage.getItem("creditos")) || [];
 
-
 let tasaInteres = 15;
+let montoMaximo = 5000;
 let clienteSeleccionado = null;
 let cuotaCalculada = 0;
 let montoCalculado = 0;
@@ -15,7 +14,6 @@ function guardarLocalStorage() {
   localStorage.setItem("clientes", JSON.stringify(clientes));
   localStorage.setItem("creditos", JSON.stringify(creditos));
 }
-
 
 // ================= SECCIONES =================
 
@@ -44,6 +42,7 @@ function guardarTasa() {
       "Tasa configurada correctamente; " + valorTasa + "%",
     );
     tasaInteres = valorTasa;
+    montoMaximo = recuperarFloat("montoMaximo");
   } else {
     mostrarTexto("mensajeTasa", "La tasa debe estar entre 10% y 20%");
   }
@@ -55,14 +54,24 @@ function guardarCliente() {
   let valorApellido = recuperaraTexto("txtApellido");
   let valorIngresos = recuperarFloat("campoIngresos");
   let valorEgresos = recuperarFloat("campoEgresos");
+  let valorTelefono = recuperaraTexto("txtTelefono");
+
+  //validacion examen
 
   let hayError = false;
+  if (valorTelefono.trim() == "") {
+    //examen
+    mostrarError("txtTelefono", "Ingrese el teléfono");
+    hayError = true;
+  }
 
   limpiarError("txtCedula");
   limpiarError("txtNombre");
   limpiarError("txtApellido");
   limpiarError("campoIngresos");
   limpiarError("campoEgresos");
+  //validacionexamen
+  limpiarError("txtTelefono");
 
   // VALIDAR CÉDULA
   if (valorCedula.trim() == "") {
@@ -121,6 +130,7 @@ function guardarCliente() {
       apellido: valorApellido,
       ingreso: valorIngresos,
       egreso: valorEgresos,
+      telefono: valorTelefono,
     };
 
     clientes.push(clienteNuevo);
@@ -133,6 +143,7 @@ function guardarCliente() {
     existente.apellido = valorApellido;
     existente.ingreso = valorIngresos;
     existente.egreso = valorEgresos;
+    existente.telefono = valorTelefono;
     guardarLocalStorage();
 
     mostrarAlertaBonita("Cliente actualizado");
@@ -162,6 +173,7 @@ function pintarClientes() {
                   <td>${usuario.apellido}</td>
                   <td>${usuario.ingreso}</td>
                   <td>${usuario.egreso}</td>
+                  <td>${usuario.telefono}</td>
                   <td>
                   <button onclick="seleccionarCliente('${usuario.cedula}')">Actualizar</button>
                   <button onclick="eliminarCliente('${usuario.cedula}')">Eliminar</button>
@@ -182,6 +194,7 @@ function seleccionarCliente(cedula) {
     mostrarTextoEnCaja("txtApellido", cliente.apellido);
     mostrarTextoEnCaja("campoIngresos", cliente.ingreso);
     mostrarTextoEnCaja("campoEgresos", cliente.egreso);
+    mostrarTextoEnCaja("txtTelefono", cliente.telefono);
   }
 }
 
@@ -191,6 +204,7 @@ function limpiar() {
   mostrarTextoEnCaja("txtApellido", "");
   mostrarTextoEnCaja("campoIngresos", "");
   mostrarTextoEnCaja("campoEgresos", "");
+  mostrarTextoEnCaja("txtTelefono", "");
   limpiarError("txtCedula");
   limpiarError("txtNombre");
   limpiarError("txtApellido");
@@ -267,6 +281,13 @@ function calcularCredito() {
   // Recuperar datos
   let monto = recuperarFloat("montoCredito");
   let plazo = recuperarInt("plazoCredito");
+  if (monto > montoMaximo) {
+    mostrarAlertaBonita("El monto supera el máximo permitido");
+
+    mostrarTextoEnCaja("montoCredito", "");
+
+    return;
+  }
 
   if (isNaN(monto) || monto <= 0) {
     mostrarError("montoCredito", "Ingrese un monto válido");
@@ -389,7 +410,6 @@ function solicitarCredito() {
 }
 
 function buscarCreditos(cedula) {
-
   let creditosEncontrados = [];
   for (let i = 0; i < creditos.length; i++) {
     let elementoCredito = creditos[i];
@@ -439,16 +459,11 @@ function pintarCredito(creditos) {
 }
 
 function eliminarCredito(indice) {
-
-  // ================= EXAMEN =================
-  // CONFIRMAR ELIMINAR CRÉDITO
-
   let confirmar = confirm("¿Desea eliminar el crédito?");
 
   if (!confirmar) {
     return;
   }
-  //===========================================
 
   creditos.splice(indice, 1);
 
@@ -461,7 +476,6 @@ function buscarCreditosCliente() {
   let lista = buscarCreditos(buscaCedula);
   pintarCredito(lista);
 }
-
 
 // ================= EXAMEN =================
 // CALCULAR TOTAL PRESTADO
@@ -491,6 +505,18 @@ function limpiarDatos() {
 }
 ///
 
+
+function mostrarCreditosVIP() {
+  let vip = [];
+
+  for (let i = 0; i < creditos.length; i++) {
+    if (creditos[i].monto >= montoMaximo) {
+      vip.push(creditos[i]);
+    }
+  }
+
+  pintarCredito(vip);
+}
 mostrarSeccion("parametros");
 pintarClientes();
 pintarCredito(creditos);
